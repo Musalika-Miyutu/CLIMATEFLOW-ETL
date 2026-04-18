@@ -1,0 +1,21 @@
+# Node (Frontend)
+node_modules/
+dist/
+.eslintcache
+
+# Python (Backend)
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Environment Variables & Database
+.env
+*.local
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db

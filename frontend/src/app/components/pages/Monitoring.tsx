@@ -1,0 +1,193 @@
+import { CheckCircle, XCircle, AlertTriangle, Info, Clock, Activity } from "lucide-react";
+
+export function Monitoring() {
+  const logs = [
+    {
+      time: "14:32",
+      level: "success",
+      pipeline: "Climate Data Collection",
+      message: "Successfully retrieved 12,450 records from Zambia Met Dept API",
+      duration: "2.3s"
+    },
+    {
+      time: "14:30",
+      level: "info",
+      pipeline: "Satellite Processing",
+      message: "Starting NASA POWER data extraction for March 2026",
+      duration: "-"
+    },
+    {
+      time: "14:28",
+      level: "warning",
+      pipeline: "Infrastructure DB",
+      message: "High latency detected - RDA database response time 8.5s",
+      duration: "8.5s"
+    },
+    {
+      time: "14:25",
+      level: "success",
+      pipeline: "Risk Analysis",
+      message: "Vulnerability assessment complete - 23 high-risk zones identified",
+      duration: "12.1s"
+    },
+    {
+      time: "14:22",
+      level: "error",
+      pipeline: "ESA Sentinel API",
+      message: "Connection timeout - retry scheduled in 5 minutes",
+      duration: "Failed"
+    },
+    {
+      time: "14:20",
+      level: "info",
+      pipeline: "Data Warehouse",
+      message: "Database backup completed - 1.2M records archived",
+      duration: "45s"
+    },
+    {
+      time: "14:18",
+      level: "success",
+      pipeline: "Data Validation",
+      message: "Quality check passed - 96.8% data integrity score",
+      duration: "5.2s"
+    },
+    {
+      time: "14:15",
+      level: "warning",
+      pipeline: "System Monitor",
+      message: "Memory usage at 84% - recommend cleanup of temporary files",
+      duration: "-"
+    },
+    {
+      time: "14:12",
+      level: "success",
+      pipeline: "NOAA Integration",
+      message: "Historical climate data synchronized successfully",
+      duration: "18.4s"
+    },
+    {
+      time: "14:10",
+      level: "info",
+      pipeline: "Dashboard Cache",
+      message: "Cache refresh initiated for real-time dashboards",
+      duration: "3.1s"
+    },
+  ];
+
+  const metrics = [
+    { label: "Total Events", value: "1,247", color: "blue" },
+    { label: "Success Rate", value: "96.8%", color: "green" },
+    { label: "Active Warnings", value: "3", color: "yellow" },
+    { label: "Critical Errors", value: "1", color: "red" },
+  ];
+
+  const getLogIcon = (level: string) => {
+    switch (level) {
+      case "success":
+        return <CheckCircle className="size-4 text-green-600" />;
+      case "error":
+        return <XCircle className="size-4 text-red-600" />;
+      case "warning":
+        return <AlertTriangle className="size-4 text-yellow-600" />;
+      case "info":
+        return <Info className="size-4 text-blue-600" />;
+      default:
+        return null;
+    }
+  };
+
+  const getLogColor = (level: string) => {
+    switch (level) {
+      case "success":
+        return "text-green-700";
+      case "error":
+        return "text-red-700";
+      case "warning":
+        return "text-yellow-700";
+      case "info":
+        return "text-blue-700";
+      default:
+        return "text-gray-700";
+    }
+  };
+
+  const getLogBg = (level: string) => {
+    switch (level) {
+      case "success":
+        return "hover:bg-green-50";
+      case "error":
+        return "hover:bg-red-50";
+      case "warning":
+        return "hover:bg-yellow-50";
+      case "info":
+        return "hover:bg-blue-50";
+      default:
+        return "hover:bg-gray-50";
+    }
+  };
+
+  const getMetricColor = (color: string) => {
+    const colors = {
+      blue: "bg-blue-50 border-blue-200 text-blue-900",
+      green: "bg-green-50 border-green-200 text-green-900",
+      yellow: "bg-yellow-50 border-yellow-200 text-yellow-900",
+      red: "bg-red-50 border-red-200 text-red-900",
+    };
+    return colors[color as keyof typeof colors] || "bg-gray-50 border-gray-200 text-gray-900";
+  };
+
+  return (
+    <div className="p-8">
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-900">Pipeline Monitoring</h2>
+        <p className="text-sm text-gray-600 mt-1">Real-time system activity and logs</p>
+      </div>
+
+      {/* Metrics */}
+      <div className="grid grid-cols-4 gap-6 mb-8">
+        {metrics.map((metric, index) => (
+          <div key={index} className={`border rounded-lg p-5 ${getMetricColor(metric.color)}`}>
+            <p className="text-sm font-medium mb-1 opacity-75">{metric.label}</p>
+            <p className="text-3xl font-bold">{metric.value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Activity Logs */}
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Activity className="size-5 text-gray-700" />
+              <h3 className="font-semibold text-gray-900">Activity Log</h3>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <Clock className="size-4" />
+              <span>Last updated: 2 mins ago</span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="divide-y divide-gray-200 max-h-[600px] overflow-y-auto">
+          {logs.map((log, index) => (
+            <div key={index} className={`px-6 py-4 flex items-start gap-4 transition-colors ${getLogBg(log.level)}`}>
+              <div className="flex items-center gap-3 min-w-[100px]">
+                {getLogIcon(log.level)}
+                <span className="text-sm font-mono text-gray-500">{log.time}</span>
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-sm font-semibold text-gray-700">{log.pipeline}</span>
+                  <span className="text-xs text-gray-400">•</span>
+                  <span className="text-xs text-gray-500">{log.duration}</span>
+                </div>
+                <p className={`text-sm ${getLogColor(log.level)}`}>{log.message}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

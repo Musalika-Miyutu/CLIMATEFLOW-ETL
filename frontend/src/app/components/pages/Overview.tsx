@@ -4,29 +4,29 @@ export function Overview() {
   const stats = [
     { 
       label: "Climate Records", 
-      value: "1.2M", 
-      change: "+18%",
+      value: "0", 
+      change: "0%",
       icon: Database,
       color: "blue"
     },
     { 
       label: "Infrastructure Assets", 
-      value: "3,847", 
-      change: "+124",
+      value: "0", 
+      change: "0",
       icon: Activity,
       color: "green"
     },
     { 
       label: "High Risk Alerts", 
-      value: "23", 
-      change: "+5",
+      value: "0", 
+      change: "0",
       icon: AlertTriangle,
       color: "red"
     },
     { 
       label: "Data Quality", 
-      value: "96.8%", 
-      change: "+2.1%",
+      value: "0%", 
+      change: "0%",
       icon: CheckCircle2,
       color: "green"
     },
@@ -35,45 +35,45 @@ export function Overview() {
   const pipelines = [
     { 
       name: "Climate Data Collection", 
-      source: "Zambia Met Dept, NOAA",
-      status: "Running", 
-      records: "456K",
-      lastRun: "2 mins ago"
+      source: "",
+      status: "Idle", 
+      records: "0",
+      lastRun: ""
     },
     { 
       name: "Satellite Data Processing", 
-      source: "NASA, ESA Sentinel",
-      status: "Running", 
-      records: "678K",
-      lastRun: "5 mins ago"
+      source: "",
+      status: "Idle", 
+      records: "0",
+      lastRun: ""
     },
     { 
       name: "Infrastructure Monitoring", 
-      source: "RDA, Local Councils",
-      status: "Complete", 
-      records: "89K",
-      lastRun: "15 mins ago"
+      source: "",
+      status: "Idle", 
+      records: "0",
+      lastRun: ""
     },
   ];
 
   const vulnerabilities = [
     { 
-      location: "Great East Road, Km 45-52", 
-      risk: "High", 
-      factor: "Flooding risk - Heavy rainfall predicted",
-      priority: "Urgent"
+      location: "", 
+      risk: "", 
+      factor: "",
+      priority: ""
     },
     { 
-      location: "Kafue Bridge District", 
-      risk: "Medium", 
-      factor: "Rising water levels detected",
-      priority: "Monitor"
+      location: "", 
+      risk: "", 
+      factor: "",
+      priority: ""
     },
     { 
-      location: "Lusaka Drainage System", 
-      risk: "Medium", 
-      factor: "Capacity concerns during rainy season",
-      priority: "Review"
+      location: "", 
+      risk: "", 
+      factor: "",
+      priority: ""
     },
   ];
 

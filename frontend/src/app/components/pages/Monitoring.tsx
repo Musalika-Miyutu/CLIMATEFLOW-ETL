@@ -3,82 +3,82 @@ import { CheckCircle, XCircle, AlertTriangle, Info, Clock, Activity } from "luci
 export function Monitoring() {
   const logs = [
     {
-      time: "14:32",
-      level: "success",
-      pipeline: "Climate Data Collection",
-      message: "Successfully retrieved 12,450 records from Zambia Met Dept API",
-      duration: "2.3s"
-    },
-    {
-      time: "14:30",
+      time: "",
       level: "info",
-      pipeline: "Satellite Processing",
-      message: "Starting NASA POWER data extraction for March 2026",
-      duration: "-"
+      pipeline: "",
+      message: "",
+      duration: ""
     },
     {
-      time: "14:28",
-      level: "warning",
-      pipeline: "Infrastructure DB",
-      message: "High latency detected - RDA database response time 8.5s",
-      duration: "8.5s"
-    },
-    {
-      time: "14:25",
-      level: "success",
-      pipeline: "Risk Analysis",
-      message: "Vulnerability assessment complete - 23 high-risk zones identified",
-      duration: "12.1s"
-    },
-    {
-      time: "14:22",
-      level: "error",
-      pipeline: "ESA Sentinel API",
-      message: "Connection timeout - retry scheduled in 5 minutes",
-      duration: "Failed"
-    },
-    {
-      time: "14:20",
+      time: "",
       level: "info",
-      pipeline: "Data Warehouse",
-      message: "Database backup completed - 1.2M records archived",
-      duration: "45s"
+      pipeline: "",
+      message: "",
+      duration: ""
     },
     {
-      time: "14:18",
-      level: "success",
-      pipeline: "Data Validation",
-      message: "Quality check passed - 96.8% data integrity score",
-      duration: "5.2s"
-    },
-    {
-      time: "14:15",
-      level: "warning",
-      pipeline: "System Monitor",
-      message: "Memory usage at 84% - recommend cleanup of temporary files",
-      duration: "-"
-    },
-    {
-      time: "14:12",
-      level: "success",
-      pipeline: "NOAA Integration",
-      message: "Historical climate data synchronized successfully",
-      duration: "18.4s"
-    },
-    {
-      time: "14:10",
+      time: "",
       level: "info",
-      pipeline: "Dashboard Cache",
-      message: "Cache refresh initiated for real-time dashboards",
-      duration: "3.1s"
+      pipeline: "",
+      message: "",
+      duration: ""
+    },
+    {
+      time: "",
+      level: "info",
+      pipeline: "",
+      message: "",
+      duration: ""
+    },
+    {
+      time: "",
+      level: "info",
+      pipeline: "",
+      message: "",
+      duration: ""
+    },
+    {
+      time: "",
+      level: "info",
+      pipeline: "",
+      message: "",
+      duration: ""
+    },
+    {
+      time: "",
+      level: "info",
+      pipeline: "",
+      message: "",
+      duration: ""
+    },
+    {
+      time: "",
+      level: "info",
+      pipeline: "",
+      message: "",
+      duration: ""
+    },
+    {
+      time: "",
+      level: "info",
+      pipeline: "",
+      message: "",
+      duration: ""
+    },
+    {
+      time: "",
+      level: "info",
+      pipeline: "",
+      message: "",
+      duration: ""
     },
   ];
 
   const metrics = [
-    { label: "Total Events", value: "1,247", color: "blue" },
-    { label: "Success Rate", value: "96.8%", color: "green" },
-    { label: "Active Warnings", value: "3", color: "yellow" },
-    { label: "Critical Errors", value: "1", color: "red" },
+    { label: "Total Events", value: "0", color: "blue" },
+    { label: "Success Rate", value: "0%", color: "green" },
+    { label: "Active Warnings", value: "0", color: "yellow" },
+    { label: "Critical Errors", value: "0", color: "red" },
   ];
 
   const getLogIcon = (level: string) => {
@@ -163,7 +163,7 @@ export function Monitoring() {
             </div>
             <div className="flex items-center gap-2 text-xs text-gray-500">
               <Clock className="size-4" />
-              <span>Last updated: 2 mins ago</span>
+              <span>Last updated: </span>
             </div>
           </div>
         </div>

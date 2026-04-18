@@ -17,62 +17,62 @@ import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle2 } from "lucide-re
 
 export function Analytics() {
   const climateDataTrend = [
-    { month: "Sep", records: 98 },
-    { month: "Oct", records: 112 },
-    { month: "Nov", records: 105 },
-    { month: "Dec", records: 127 },
-    { month: "Jan", records: 135 },
-    { month: "Feb", records: 128 },
-    { month: "Mar", records: 145 },
+    { month: "Sep", records: 0 },
+    { month: "Oct", records: 0 },
+    { month: "Nov", records: 0 },
+    { month: "Dec", records: 0 },
+    { month: "Jan", records: 0 },
+    { month: "Feb", records: 0 },
+    { month: "Mar", records: 0 },
   ];
 
   const sourceDistribution = [
-    { name: "Climate APIs", records: 456, fill: "#2563eb" },
-    { name: "Satellite Data", records: 678, fill: "#9333ea" },
-    { name: "Infrastructure DB", records: 89, fill: "#16a34a" },
+    { name: "Climate APIs", records: 0, fill: "#2563eb" },
+    { name: "Satellite Data", records: 0, fill: "#9333ea" },
+    { name: "Infrastructure DB", records: 0, fill: "#16a34a" },
   ];
 
   const riskByRegion = [
-    { region: "Lusaka", high: 8, medium: 15, low: 42 },
-    { region: "Copperbelt", high: 5, medium: 12, low: 38 },
-    { region: "Southern", high: 12, medium: 18, low: 35 },
-    { region: "Eastern", high: 6, medium: 14, low: 40 },
-    { region: "Western", high: 9, medium: 16, low: 37 },
+    { region: "Lusaka", high: 0, medium: 0, low: 0 },
+    { region: "Copperbelt", high: 0, medium: 0, low: 0 },
+    { region: "Southern", high: 0, medium: 0, low: 0 },
+    { region: "Eastern", high: 0, medium: 0, low: 0 },
+    { region: "Western", high: 0, medium: 0, low: 0 },
   ];
 
   const vulnerabilityData = [
-    { type: "Flooding", count: 23, color: "#ef4444" },
-    { type: "Erosion", count: 12, color: "#f59e0b" },
-    { type: "Heat Stress", count: 8, color: "#eab308" },
-    { type: "Low Risk", count: 142, color: "#22c55e" },
+    { type: "Flooding", count: 0, color: "#ef4444" },
+    { type: "Erosion", count: 0, color: "#f59e0b" },
+    { type: "Heat Stress", count: 0, color: "#eab308" },
+    { type: "Low Risk", count: 0, color: "#22c55e" },
   ];
 
   const performanceMetrics = [
     {
       label: "Data Processing Rate",
-      value: "1.2M",
-      change: "+18%",
+      value: "0",
+      change: "0%",
       trend: "up",
       subtitle: "records/month"
     },
     {
       label: "Pipeline Efficiency",
-      value: "96.8%",
-      change: "+2.1%",
+      value: "0%",
+      change: "0%",
       trend: "up",
       subtitle: "success rate"
     },
     {
       label: "Infrastructure Coverage",
-      value: "3,847",
-      change: "+124",
+      value: "0",
+      change: "0",
       trend: "up",
       subtitle: "monitored assets"
     },
     {
       label: "Active Vulnerabilities",
-      value: "23",
-      change: "+5",
+      value: "0",
+      change: "0",
       trend: "down",
       subtitle: "high risk alerts"
     },
@@ -205,7 +205,7 @@ export function Analytics() {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
-            <p className="text-xs text-gray-500 mt-4 text-center">Total: 1.2M records across all sources</p>
+            <p className="text-xs text-gray-500 mt-4 text-center">Total: 0 records across all sources</p>
           </CardContent>
         </Card>
 
@@ -239,10 +239,10 @@ export function Analytics() {
             </div>
             <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-900">
-                <strong>Total Infrastructure Assets Monitored:</strong> 185
+                <strong>Total Infrastructure Assets Monitored:</strong> 0
               </p>
               <p className="text-xs text-blue-700 mt-1">
-                23 high-priority vulnerabilities require immediate attention
+                0 high-priority vulnerabilities require immediate attention
               </p>
             </div>
           </CardContent>

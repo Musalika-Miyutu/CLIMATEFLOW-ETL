@@ -7,66 +7,66 @@ export function DataSources() {
       type: "Climate Data Provider",
       icon: Cloud,
       category: "Climate",
-      endpoint: "api.zmd.gov.zm/weather",
-      records: "456,230",
-      status: "Active",
-      dataTypes: ["Rainfall", "Temperature", "Humidity", "Wind Speed"],
-      frequency: "Hourly"
+      endpoint: "",
+      records: "0",
+      status: "Inactive",
+      dataTypes: [],
+      frequency: ""
     },
     {
       name: "NOAA Climate Data",
       type: "Historical Climate Records",
       icon: Thermometer,
       category: "Climate",
-      endpoint: "www.ncdc.noaa.gov/cdo-web/api",
-      records: "234,567",
-      status: "Active",
-      dataTypes: ["Historical Rainfall", "Temperature Trends", "Climate Indices"],
-      frequency: "Daily"
+      endpoint: "",
+      records: "0",
+      status: "Inactive",
+      dataTypes: [],
+      frequency: ""
     },
     {
       name: "NASA POWER API",
       type: "Solar & Meteorological Data",
       icon: Satellite,
       category: "Satellite",
-      endpoint: "power.larc.nasa.gov/api",
-      records: "345,890",
-      status: "Active",
-      dataTypes: ["Solar Radiation", "Precipitation", "Temperature"],
-      frequency: "Daily"
+      endpoint: "",
+      records: "0",
+      status: "Inactive",
+      dataTypes: [],
+      frequency: ""
     },
     {
       name: "ESA Sentinel Satellites",
       type: "Earth Observation Data",
       icon: Satellite,
       category: "Satellite",
-      endpoint: "scihub.copernicus.eu/api",
-      records: "567,123",
-      status: "Active",
-      dataTypes: ["Land Surface", "Vegetation Index", "Flood Mapping"],
-      frequency: "Weekly"
+      endpoint: "",
+      records: "0",
+      status: "Inactive",
+      dataTypes: [],
+      frequency: ""
     },
     {
       name: "Road Development Agency (RDA)",
       type: "Infrastructure Asset Database",
       icon: Building2,
       category: "Infrastructure",
-      endpoint: "rda.gov.zm/infrastructure-db",
-      records: "45,678",
-      status: "Active",
-      dataTypes: ["Road Networks", "Bridge Inspections", "Maintenance Records"],
-      frequency: "On-demand"
+      endpoint: "",
+      records: "0",
+      status: "Inactive",
+      dataTypes: [],
+      frequency: ""
     },
     {
       name: "Water & Sanitation Department",
       type: "Hydrological Monitoring",
       icon: Droplets,
       category: "Infrastructure",
-      endpoint: "mwds.gov.zm/hydro-api",
-      records: "89,234",
-      status: "Active",
-      dataTypes: ["Water Levels", "Drainage Systems", "Flood Zones"],
-      frequency: "Real-time"
+      endpoint: "",
+      records: "0",
+      status: "Inactive",
+      dataTypes: [],
+      frequency: ""
     },
   ];
 
@@ -111,24 +111,24 @@ export function DataSources() {
             <Cloud className="size-5 text-blue-600" />
             <span className="text-sm font-semibold text-blue-900">Climate Sources</span>
           </div>
-          <p className="text-2xl font-bold text-blue-900">2</p>
-          <p className="text-xs text-blue-600 mt-1">690K+ records</p>
+          <p className="text-2xl font-bold text-blue-900">0</p>
+          <p className="text-xs text-blue-600 mt-1">0 records</p>
         </div>
         <div className="bg-purple-50 border border-purple-200 rounded-lg p-5">
           <div className="flex items-center gap-3 mb-2">
             <Satellite className="size-5 text-purple-600" />
             <span className="text-sm font-semibold text-purple-900">Satellite Sources</span>
           </div>
-          <p className="text-2xl font-bold text-purple-900">2</p>
-          <p className="text-xs text-purple-600 mt-1">913K+ records</p>
+          <p className="text-2xl font-bold text-purple-900">0</p>
+          <p className="text-xs text-purple-600 mt-1">0 records</p>
         </div>
         <div className="bg-green-50 border border-green-200 rounded-lg p-5">
           <div className="flex items-center gap-3 mb-2">
             <Database className="size-5 text-green-600" />
             <span className="text-sm font-semibold text-green-900">Infrastructure Sources</span>
           </div>
-          <p className="text-2xl font-bold text-green-900">2</p>
-          <p className="text-xs text-green-600 mt-1">135K+ records</p>
+          <p className="text-2xl font-bold text-green-900">0</p>
+          <p className="text-xs text-green-600 mt-1">0 records</p>
         </div>
       </div>
 

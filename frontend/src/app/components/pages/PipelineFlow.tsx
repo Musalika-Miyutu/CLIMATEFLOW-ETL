@@ -8,9 +8,9 @@ export function PipelineFlow() {
       color: "blue",
       description: "Data Collection",
       items: [
-        { name: "Climate Data", detail: "Zambia Met Dept, NOAA, Copernicus", icon: Cloud },
-        { name: "Satellite Data", detail: "NASA, ESA Sentinel missions", icon: Satellite },
-        { name: "Infrastructure DB", detail: "RDA, Municipal records", icon: FileSpreadsheet }
+        { name: "Climate Data", detail: "", icon: Cloud },
+        { name: "Satellite Data", detail: "", icon: Satellite },
+        { name: "Infrastructure DB", detail: "", icon: FileSpreadsheet }
       ],
     },
     {
@@ -19,9 +19,9 @@ export function PipelineFlow() {
       color: "purple",
       description: "Data Processing",
       items: [
-        { name: "Data Cleaning", detail: "Remove duplicates, validate formats" },
-        { name: "Standardization", detail: "Normalize units, combine datasets" },
-        { name: "Risk Analysis", detail: "Calculate vulnerability scores" }
+        { name: "Data Cleaning", detail: "" },
+        { name: "Standardization", detail: "" },
+        { name: "Risk Analysis", detail: "" }
       ],
     },
     {
@@ -30,9 +30,9 @@ export function PipelineFlow() {
       color: "green",
       description: "Data Storage",
       items: [
-        { name: "PostgreSQL + PostGIS", detail: "Centralized climate database" },
-        { name: "Analytics Engine", detail: "Processed insights & reports" },
-        { name: "Dashboard Cache", detail: "Fast data retrieval" }
+        { name: "PostgreSQL + PostGIS", detail: "" },
+        { name: "Analytics Engine", detail: "" },
+        { name: "Dashboard Cache", detail: "" }
       ],
     },
   ];
@@ -105,18 +105,18 @@ export function PipelineFlow() {
       <div className="mt-8 grid grid-cols-3 gap-6">
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-5">
           <p className="text-sm text-blue-700 font-medium mb-1">Total Data Sources</p>
-          <p className="text-3xl font-bold text-blue-900">12</p>
-          <p className="text-xs text-blue-600 mt-1">Climate, Satellite, Infrastructure</p>
+          <p className="text-3xl font-bold text-blue-900">0</p>
+          <p className="text-xs text-blue-600 mt-1"></p>
         </div>
         <div className="bg-purple-50 border border-purple-200 rounded-lg p-5">
           <p className="text-sm text-purple-700 font-medium mb-1">Processing Speed</p>
-          <p className="text-3xl font-bold text-purple-900">4.2s</p>
-          <p className="text-xs text-purple-600 mt-1">Average transformation time</p>
+          <p className="text-3xl font-bold text-purple-900">0s</p>
+          <p className="text-xs text-purple-600 mt-1"></p>
         </div>
         <div className="bg-green-50 border border-green-200 rounded-lg p-5">
           <p className="text-sm text-green-700 font-medium mb-1">Records Stored</p>
-          <p className="text-3xl font-bold text-green-900">1.2M</p>
-          <p className="text-xs text-green-600 mt-1">Total database entries</p>
+          <p className="text-3xl font-bold text-green-900">0</p>
+          <p className="text-xs text-green-600 mt-1"></p>
         </div>
       </div>
     </div>

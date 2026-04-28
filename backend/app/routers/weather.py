@@ -53,3 +53,52 @@ def get_observations_by_station(station_id: str, db: Session = Depends(get_db), 
     if not obs:
         raise HTTPException(status_code=404, detail="No observations found for this station")
     return obs
+
+@router.get("/observations/by-source/{source_api}", response_model=List[WeatherObservationResponse])
+def get_observations_by_source(
+    source_api: str,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    """Get observations filtered by source API (NASA POWER, OpenWeather, ERA5)"""
+    stations = db.query(WeatherStation).filter(
+        WeatherStation.source_api == source_api
+    ).all()
+
+    if not stations:
+        raise HTTPException(status_code=404, detail=f"No stations found for source: {source_api}")
+
+    station_ids = [s.station_id for s in stations]
+    observations = db.query(WeatherObservation).filter(
+        WeatherObservation.station_id.in_(station_ids)
+    ).order_by(WeatherObservation.observed_at.desc()).all()
+
+    return observations
+
+
+@router.get("/sources/summary")
+def get_sources_summary(
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    """Get a summary of observations count per source API"""
+    sources = ["NASA POWER", "OpenWeather", "ERA5"]
+    summary = []
+
+    for source in sources:
+        stations = db.query(WeatherStation).filter(
+            WeatherStation.source_api == source
+        ).all()
+
+        station_ids  = [s.station_id for s in stations]
+        total_obs    = db.query(WeatherObservation).filter(
+            WeatherObservation.station_id.in_(station_ids)
+        ).count() if station_ids else 0
+
+        summary.append({
+            "source":            source,
+            "total_stations":    len(stations),
+            "total_observations": total_obs
+        })
+
+    return summary

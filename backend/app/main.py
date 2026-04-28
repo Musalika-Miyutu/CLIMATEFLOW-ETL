@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from app.routers import auth, assets, weather, risk
+from app.routers import auth, assets, weather, risk, pipeline
 
 load_dotenv()
 
@@ -11,7 +11,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# ── CORS (allows React dashboard to talk to this API) ────────
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://localhost:5173"],
@@ -20,11 +19,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Routers ──────────────────────────────────────────────────
 app.include_router(auth.router)
 app.include_router(assets.router)
 app.include_router(weather.router)
 app.include_router(risk.router)
+app.include_router(pipeline.router)
 
 
 @app.get("/")

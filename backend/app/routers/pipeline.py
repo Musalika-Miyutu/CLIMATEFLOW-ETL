@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, BackgroundTasks
 from app.routers.auth import get_current_user
 from app.etl.pipeline_runner import run_nasa_power_pipeline, run_openweather_pipeline, run_era5_pipeline
+from app.etl.risk_engine import run_risk_assessment_engine
 from app.database import SessionLocal
 from app.models.models import PipelineRun, PipelineLog
 from app.schemas.schemas import PipelineRunResponse
@@ -75,4 +76,19 @@ def trigger_era5_pipeline(
         "message": "ERA5 pipeline triggered successfully",
         "days_back": days_back,
         "status": "running in background"
+    }
+
+@router.post("/run/risk-assessment")
+def trigger_risk_assessment(
+    background_tasks: BackgroundTasks,
+    current_user=Depends(get_current_user)
+):
+    """
+    Trigger the Risk Assessment Engine.
+    Evaluates all infrastructure assets against latest weather observations.
+    """
+    background_tasks.add_task(run_risk_assessment_engine)
+    return {
+        "message": "Risk Assessment Engine triggered successfully",
+        "status":  "running in background"
     }

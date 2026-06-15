@@ -92,3 +92,9 @@ def trigger_risk_assessment(
         "message": "Risk Assessment Engine triggered successfully",
         "status":  "running in background"
     }
+
+@router.get("/schedule")
+def get_schedule(current_user=Depends(get_current_user)):
+    """Get the status and next run times of all scheduled pipelines."""
+    from app.scheduler import get_scheduler_status
+    return get_scheduler_status()

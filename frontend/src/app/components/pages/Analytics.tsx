@@ -1,80 +1,164 @@
+import { useState, useEffect } from "react";
 import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
+  LineChart, Line, BarChart, Bar, XAxis, YAxis,
+  CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { weatherAPI, assetsAPI, riskAPI, pipelineAPI } from "../../../imports/api";
 
 export function Analytics() {
-  const climateDataTrend = [
-    { month: "Sep", records: 0 },
-    { month: "Oct", records: 0 },
-    { month: "Nov", records: 0 },
-    { month: "Dec", records: 0 },
-    { month: "Jan", records: 0 },
-    { month: "Feb", records: 0 },
-    { month: "Mar", records: 0 },
-  ];
+  const [sourceDistribution, setSourceDistribution] = useState([
+    { name: "NASA POWER",  records: 0, fill: "#2563eb" },
+    { name: "OpenWeather", records: 0, fill: "#9333ea" },
+    { name: "ERA5",        records: 0, fill: "#16a34a" },
+  ]);
+  const [riskByAsset, setRiskByAsset]               = useState<any[]>([]);
+  const [vulnerabilityData, setVulnerabilityData]   = useState([
+    { type: "Critical Risk", count: 0, color: "#ef4444" },
+    { type: "High Risk",     count: 0, color: "#f59e0b" },
+    { type: "Medium Risk",   count: 0, color: "#eab308" },
+    { type: "Low Risk",      count: 0, color: "#22c55e" },
+  ]);
+  const [performanceMetrics, setPerformanceMetrics] = useState({
+    totalRecords:    0,
+    pipelineSuccess: 0,
+    totalAssets:     0,
+    highRiskAlerts:  0,
+  });
+  const [observationTrend, setObservationTrend]     = useState<any[]>([]);
+  const [totalRecords, setTotalRecords]             = useState(0);
+  const [loading, setLoading]                       = useState(true);
 
-  const sourceDistribution = [
-    { name: "Climate APIs", records: 0, fill: "#2563eb" },
-    { name: "Satellite Data", records: 0, fill: "#9333ea" },
-    { name: "Infrastructure DB", records: 0, fill: "#16a34a" },
-  ];
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [summary, assets, assessments, alerts, runs, observations] = await Promise.all([
+          weatherAPI.getSourcesSummary(),
+          assetsAPI.getAll(),
+          riskAPI.getAll(),
+          riskAPI.getAllAlerts(),
+          pipelineAPI.getRuns(),
+          weatherAPI.getObservations(),
+        ]);
 
-  const riskByRegion = [
-    { region: "Lusaka", high: 0, medium: 0, low: 0 },
-    { region: "Copperbelt", high: 0, medium: 0, low: 0 },
-    { region: "Southern", high: 0, medium: 0, low: 0 },
-    { region: "Eastern", high: 0, medium: 0, low: 0 },
-    { region: "Western", high: 0, medium: 0, low: 0 },
-  ];
+        // Source distribution
+        const updatedSources = [
+          { name: "NASA POWER",  records: summary.find((s: any) => s.source === "NASA POWER")?.total_observations  || 0, fill: "#2563eb" },
+          { name: "OpenWeather", records: summary.find((s: any) => s.source === "OpenWeather")?.total_observations || 0, fill: "#9333ea" },
+          { name: "ERA5",        records: summary.find((s: any) => s.source === "ERA5")?.total_observations        || 0, fill: "#16a34a" },
+        ];
+        setSourceDistribution(updatedSources);
 
-  const vulnerabilityData = [
-    { type: "Flooding", count: 0, color: "#ef4444" },
-    { type: "Erosion", count: 0, color: "#f59e0b" },
-    { type: "Heat Stress", count: 0, color: "#eab308" },
-    { type: "Low Risk", count: 0, color: "#22c55e" },
-  ];
+        const total = updatedSources.reduce((sum, s) => sum + s.records, 0);
+        setTotalRecords(total);
 
-  const performanceMetrics = [
+        // Risk by asset type
+        const assetRiskMap: Record<string, { high: number, medium: number, low: number }> = {};
+        assets.forEach((asset: any) => {
+          assetRiskMap[asset.asset_name] = { high: 0, medium: 0, low: 0 };
+        });
+
+        assessments.forEach((a: any) => {
+          const asset = assets.find((asset: any) => asset.asset_id === a.asset_id);
+          if (asset) {
+            const name = asset.asset_name.split(" ").slice(0, 2).join(" ");
+            if (!assetRiskMap[name]) assetRiskMap[name] = { high: 0, medium: 0, low: 0 };
+            if (a.risk_level >= 4)      assetRiskMap[name].high++;
+            else if (a.risk_level >= 3) assetRiskMap[name].medium++;
+            else                        assetRiskMap[name].low++;
+          }
+        });
+
+        setRiskByAsset(
+          Object.entries(assetRiskMap).map(([region, counts]) => ({ region, ...counts }))
+        );
+
+        // Vulnerability distribution
+        const critical = assessments.filter((a: any) => a.risk_level === 5).length;
+        const high     = assessments.filter((a: any) => a.risk_level === 4).length;
+        const medium   = assessments.filter((a: any) => a.risk_level === 3).length;
+        const low      = assessments.filter((a: any) => a.risk_level <= 2).length;
+
+        setVulnerabilityData([
+          { type: "Critical Risk", count: critical, color: "#ef4444" },
+          { type: "High Risk",     count: high,     color: "#f59e0b" },
+          { type: "Medium Risk",   count: medium,   color: "#eab308" },
+          { type: "Low Risk",      count: low,      color: "#22c55e" },
+        ]);
+
+        // Performance metrics
+        const successRuns = runs.filter((r: any) => r.status === "success").length;
+        const successRate = runs.length > 0
+          ? Math.round((successRuns / runs.length) * 100)
+          : 0;
+        const highAlerts  = alerts.filter(
+          (a: any) => a.severity === "high" || a.severity === "critical"
+        ).length;
+
+        setPerformanceMetrics({
+          totalRecords:    total,
+          pipelineSuccess: successRate,
+          totalAssets:     assets.length,
+          highRiskAlerts:  highAlerts,
+        });
+
+        // Observation trend — group by date
+        const trendMap: Record<string, number> = {};
+        observations.forEach((obs: any) => {
+          const date = new Date(obs.observed_at).toLocaleDateString("en-US", {
+            month: "short", day: "numeric"
+          });
+          trendMap[date] = (trendMap[date] || 0) + 1;
+        });
+
+        const trend = Object.entries(trendMap)
+          .slice(-7)
+          .map(([date, records]) => ({ month: date, records }));
+        setObservationTrend(trend);
+
+      } catch (error) {
+        console.error("Error fetching analytics data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+    const interval = setInterval(fetchData, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const maxVulnerability = Math.max(...vulnerabilityData.map(v => v.count), 1);
+
+  const metrics = [
     {
-      label: "Data Processing Rate",
-      value: "0",
-      change: "0%",
-      trend: "up",
-      subtitle: "records/month"
+      label:    "Data Processing Rate",
+      value:    loading ? "..." : performanceMetrics.totalRecords.toLocaleString(),
+      change:   "All sources",
+      trend:    "up",
+      subtitle: "total records"
     },
     {
-      label: "Pipeline Efficiency",
-      value: "0%",
-      change: "0%",
-      trend: "up",
-      subtitle: "success rate"
+      label:    "Pipeline Efficiency",
+      value:    loading ? "..." : `${performanceMetrics.pipelineSuccess}%`,
+      change:   "Success rate",
+      trend:    "up",
+      subtitle: "pipeline runs"
     },
     {
-      label: "Infrastructure Coverage",
-      value: "0",
-      change: "0",
-      trend: "up",
+      label:    "Infrastructure Coverage",
+      value:    loading ? "..." : performanceMetrics.totalAssets.toString(),
+      change:   "Kitwe area",
+      trend:    "up",
       subtitle: "monitored assets"
     },
     {
-      label: "Active Vulnerabilities",
-      value: "0",
-      change: "0",
-      trend: "down",
-      subtitle: "high risk alerts"
+      label:    "Active Vulnerabilities",
+      value:    loading ? "..." : performanceMetrics.highRiskAlerts.toString(),
+      change:   "High & critical",
+      trend:    performanceMetrics.highRiskAlerts > 0 ? "down" : "up",
+      subtitle: "risk alerts"
     },
   ];
 
@@ -87,16 +171,15 @@ export function Analytics() {
 
       {/* Performance Metrics */}
       <div className="grid grid-cols-4 gap-6">
-        {performanceMetrics.map((metric, index) => (
+        {metrics.map((metric, index) => (
           <Card key={index}>
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-3">
                 <p className="text-sm text-gray-600">{metric.label}</p>
-                {metric.trend === "up" ? (
-                  <TrendingUp className="size-4 text-green-600" />
-                ) : (
-                  <TrendingDown className="size-4 text-red-600" />
-                )}
+                {metric.trend === "up"
+                  ? <TrendingUp  className="size-4 text-green-600" />
+                  : <TrendingDown className="size-4 text-red-600" />
+                }
               </div>
               <p className="text-3xl font-bold text-gray-900">{metric.value}</p>
               <div className="flex items-center gap-2 mt-2">
@@ -111,7 +194,7 @@ export function Analytics() {
       </div>
 
       <div className="grid grid-cols-2 gap-6">
-        {/* Climate Data Collection Trend */}
+        {/* Observation Trend */}
         <Card>
           <CardHeader className="border-b">
             <CardTitle className="flex items-center gap-2">
@@ -121,7 +204,7 @@ export function Analytics() {
           </CardHeader>
           <CardContent className="p-6">
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={climateDataTrend}>
+              <LineChart data={observationTrend}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis dataKey="month" stroke="#6b7280" />
                 <YAxis stroke="#6b7280" />
@@ -135,28 +218,30 @@ export function Analytics() {
                 />
               </LineChart>
             </ResponsiveContainer>
-            <p className="text-xs text-gray-500 mt-4 text-center">Records processed (thousands) over the last 7 months</p>
+            <p className="text-xs text-gray-500 mt-4 text-center">
+              Observations ingested per day across all sources
+            </p>
           </CardContent>
         </Card>
 
-        {/* Infrastructure Risk by Region */}
+        {/* Risk by Asset */}
         <Card>
           <CardHeader className="border-b">
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className="size-5 text-yellow-600" />
-              Infrastructure Risk by Region
+              Infrastructure Risk by Asset
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={riskByRegion}>
+              <BarChart data={riskByAsset}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="region" stroke="#6b7280" />
+                <XAxis dataKey="region" stroke="#6b7280" tick={{ fontSize: 11 }} />
                 <YAxis stroke="#6b7280" />
                 <Tooltip />
-                <Bar dataKey="high" stackId="a" fill="#ef4444" radius={[0, 0, 0, 0]} />
-                <Bar dataKey="medium" stackId="a" fill="#f59e0b" radius={[0, 0, 0, 0]} />
-                <Bar dataKey="low" stackId="a" fill="#22c55e" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="high"   stackId="a" fill="#ef4444" />
+                <Bar dataKey="medium" stackId="a" fill="#f59e0b" />
+                <Bar dataKey="low"    stackId="a" fill="#22c55e" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
             <div className="flex items-center justify-center gap-4 mt-4 text-xs">
@@ -178,7 +263,7 @@ export function Analytics() {
       </div>
 
       <div className="grid grid-cols-2 gap-6">
-        {/* Data Source Distribution */}
+        {/* Source Distribution */}
         <Card>
           <CardHeader className="border-b">
             <CardTitle className="flex items-center gap-2">
@@ -205,11 +290,13 @@ export function Analytics() {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
-            <p className="text-xs text-gray-500 mt-4 text-center">Total: 0 records across all sources</p>
+            <p className="text-xs text-gray-500 mt-4 text-center">
+              Total: {loading ? "..." : totalRecords.toLocaleString()} records across all sources
+            </p>
           </CardContent>
         </Card>
 
-        {/* Vulnerability Type Distribution */}
+        {/* Vulnerability Distribution */}
         <Card>
           <CardHeader className="border-b">
             <CardTitle className="flex items-center gap-2">
@@ -223,13 +310,15 @@ export function Analytics() {
                 <div key={index}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-gray-700">{item.type}</span>
-                    <span className="text-sm font-bold text-gray-900">{item.count}</span>
+                    <span className="text-sm font-bold text-gray-900">
+                      {loading ? "..." : item.count}
+                    </span>
                   </div>
                   <div className="w-full bg-gray-100 rounded-full h-3">
                     <div
                       className="h-3 rounded-full transition-all"
                       style={{
-                        width: `${(item.count / 185) * 100}%`,
+                        width: `${(item.count / maxVulnerability) * 100}%`,
                         backgroundColor: item.color,
                       }}
                     />
@@ -239,10 +328,11 @@ export function Analytics() {
             </div>
             <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-900">
-                <strong>Total Infrastructure Assets Monitored:</strong> 0
+                <strong>Total Infrastructure Assets Monitored:</strong>{" "}
+                {loading ? "..." : performanceMetrics.totalAssets}
               </p>
               <p className="text-xs text-blue-700 mt-1">
-                0 high-priority vulnerabilities require immediate attention
+                {loading ? "..." : performanceMetrics.highRiskAlerts} high-priority vulnerabilities require immediate attention
               </p>
             </div>
           </CardContent>

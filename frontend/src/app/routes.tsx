@@ -6,6 +6,7 @@ import { DataSources } from "./components/pages/DataSources";
 import { Monitoring } from "./components/pages/Monitoring";
 import { Analytics } from "./components/pages/Analytics";
 import { Login } from "./components/pages/Login";
+import { Register } from "./components/pages/Register";
 
 function requireAuth() {
   const token = localStorage.getItem("token");
@@ -17,6 +18,10 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     Component: Login,
+  },
+  {
+    path: "/register",
+    Component: Register,
   },
   {
     path: "/",

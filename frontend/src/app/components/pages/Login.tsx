@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 import { authAPI } from "../../../imports/api";
 
 export function Login() {
@@ -81,6 +81,12 @@ export function Login() {
 
         {/* Footer */}
         <div className="mt-6 pt-6 border-t border-gray-200 text-center">
+          <p className="text-sm text-gray-500 mb-3">
+            Don't have an account?{" "}
+            <Link to="/register" className="text-blue-600 font-medium hover:underline">
+              Create one
+            </Link>
+          </p>
           <p className="text-xs text-gray-400">
             CBU — 3rd Year Project · Group 27
           </p>

@@ -34,10 +34,16 @@ async function apiFetch(endpoint: string, options: RequestInit = {}) {
   }
 
   if (!response.ok) {
-    throw new Error(`API Error: ${response.statusText}`);
+    try {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || `API Error: ${response.statusText}`);
+    } catch {
+      throw new Error(`API Error: ${response.statusText}`);
+    }
   }
 
   return response.json();
+
 }
 
 // ── Auth API ──────────────────────────────────────────────────
@@ -101,6 +107,22 @@ export const riskAPI = {
 // ── Pipeline API ──────────────────────────────────────────────
 export const pipelineAPI = {
   getRuns: () => apiFetch("/pipeline/runs"),
+  downloadReport: async () => {
+    const token = getToken();
+    const response = await fetch(`${API_BASE_URL}/pipeline/report/pdf`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error("Failed to download report");
+    const blob = await response.blob();
+    const url  = window.URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url;
+    a.download = `climateflow_report_${new Date().toISOString().slice(0,10)}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  },
   getRunLogs: (runId: string) => apiFetch(`/pipeline/runs/${runId}/logs`),
   runNasaPower: (daysBack: number = 7) => apiFetch(`/pipeline/run/nasa-power?days_back=${daysBack}`, { method: "POST" }),
   runOpenWeather: () => apiFetch("/pipeline/run/openweather", { method: "POST" }),

@@ -134,9 +134,17 @@ export function Overview() {
 
   return (
     <div className="p-8">
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Infrastructure Monitoring Dashboard</h2>
-        <p className="text-sm text-gray-600 mt-1">Climate-Resilient Infrastructure Pipeline — Zambia</p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Infrastructure Monitoring Dashboard</h2>
+          <p className="text-sm text-gray-600 mt-1">Climate-Resilient Infrastructure Pipeline — Zambia</p>
+        </div>
+        <button
+          onClick={() => pipelineAPI.downloadReport()}
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+        >
+          Download PDF Report
+        </button>
       </div>
 
       {/* Stats Grid */}

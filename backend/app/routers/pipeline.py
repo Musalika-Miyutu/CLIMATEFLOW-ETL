@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import APIRouter, Depends, BackgroundTasks
 from app.routers.auth import get_current_user
 from app.etl.pipeline_runner import run_nasa_power_pipeline, run_openweather_pipeline, run_era5_pipeline
@@ -8,6 +9,9 @@ from app.schemas.schemas import PipelineRunResponse
 from sqlalchemy.orm import Session
 from app.database import get_db
 from typing import List
+from fastapi.responses import StreamingResponse
+from app.reports.pdf_generator import generate_infrastructure_report
+from app.models.models import InfrastructureAsset, RiskAssessment, Alert, WeatherStation, WeatherObservation
 
 router = APIRouter(prefix="/pipeline", tags=["ETL Pipeline"])
 
@@ -98,3 +102,53 @@ def get_schedule(current_user=Depends(get_current_user)):
     """Get the status and next run times of all scheduled pipelines."""
     from app.scheduler import get_scheduler_status
     return get_scheduler_status()
+
+@router.get("/report/pdf")
+def download_pdf_report(
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    """Generate and download a PDF report of the current infrastructure status."""
+
+    assets_query      = db.query(InfrastructureAsset).all()
+    assessments_query = db.query(RiskAssessment).order_by(RiskAssessment.assessed_at.desc()).limit(100).all()
+    alerts_query      = db.query(Alert).filter(Alert.acknowledged == False).order_by(Alert.triggered_at.desc()).all()
+
+    assets = [{
+        "asset_name":       a.asset_name,
+        "asset_type":       a.asset_type,
+        "condition_status": a.condition_status,
+        "risk_threshold":   a.risk_threshold
+    } for a in assets_query]
+
+    assessments = [{"risk_level": a.risk_level} for a in assessments_query]
+
+    alerts = [{
+        "severity": a.severity,
+        "message":  a.message
+    } for a in alerts_query]
+
+    sources = ["NASA POWER", "OpenWeather", "ERA5"]
+    sources_summary = []
+    for source in sources:
+        stations = db.query(WeatherStation).filter(WeatherStation.source_api == source).all()
+        station_ids = [s.station_id for s in stations]
+        total_obs = db.query(WeatherObservation).filter(
+            WeatherObservation.station_id.in_(station_ids)
+        ).count() if station_ids else 0
+
+        sources_summary.append({
+            "source": source,
+            "total_stations": len(stations),
+            "total_observations": total_obs
+        })
+
+    pdf_buffer = generate_infrastructure_report(assets, assessments, alerts, sources_summary)
+
+    return StreamingResponse(
+        pdf_buffer,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename=climateflow_report_{datetime.utcnow().strftime('%Y%m%d_%H%M')}.pdf"
+        }
+    )

@@ -1,6 +1,21 @@
 import { useState, useEffect } from "react";
-import { Database, Zap, HardDrive, ArrowRight, Cloud, Satellite, FileSpreadsheet } from "lucide-react";
+import { Database, Zap, HardDrive, ArrowRight, Cloud, Satellite, FileSpreadsheet, type LucideIcon } from "lucide-react";
 import { pipelineAPI, weatherAPI } from "../../../imports/api";
+
+type StageItem = {
+  name: string;
+  detail: string;
+  icon?: LucideIcon;
+  action?: () => Promise<any>;
+};
+
+type Stage = {
+  name: string;
+  icon: LucideIcon;
+  color: string;
+  description: string;
+  items: StageItem[];
+};
 
 export function PipelineFlow() {
   const [stats, setStats]     = useState({
@@ -65,7 +80,7 @@ export function PipelineFlow() {
     }
   }
 
-  const stages = [
+  const stages: Stage[] = [
     {
       name:        "Extract",
       icon:        Database,
